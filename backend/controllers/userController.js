@@ -29,15 +29,14 @@ const registerUser = async (req, res) => {
 };
 
 
-
-
 // Log in a user
 const loginUser = async (req, res) => {
     const {email, password} = req.body;
 
     let present  = await User.findOne({email : email, password : password});
     if(present){
-        let token = gentoken({email : email, password : password});
+        console.log(present);
+        let token = gentoken({_id : present._id, email : email, password : password, trips : present.trips});
         res.cookie('authToken', token);
         res.json({
             message : "login successful",
@@ -51,15 +50,28 @@ const loginUser = async (req, res) => {
 };
 
 
-
 // Get user profile
 const getUserProfile = async (req, res) => {
     if(req.cookies.authToken){
         const token = await req.cookies.authToken;
-        res.json(decode(authToken));}
+        res.json(decode(token));}
     else{
         res.json({error : "fuck error"});
     }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile };
+
+//signout
+const signOut = async (req, res) => {
+    //delete cookies
+    const token = await req.cookies.authToken;
+    if(token){
+    res.clearCookie(token);
+    res.status(201).json({success : "token deleted successfully"})
+    }
+    else{
+        res.status(401).json({error : "error no token available"});
+    }
+}
+
+module.exports = { registerUser, loginUser, getUserProfile, signOut };
