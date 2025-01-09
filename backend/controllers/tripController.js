@@ -2,7 +2,7 @@ const Trip = require("../models/Trip");
 const User = require("../models/User");
 const { decode } = require("../middlewares/authMiddleware");
 
-// iss file me logged in, user k trips ki list, create new trip, trip me user add, trip delete karne k function h
+// iss file me logged in user k trips ki list, create new trip, trip me user add, trip delete karne k function h
 
 
 
