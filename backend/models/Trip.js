@@ -7,6 +7,7 @@ const tripSchema = new mongoose.Schema({
   users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   subDestinations: [
     {
+      _id: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() }, // Automatically generate unique _id
       name: String,
       description: String,
       expenditures: [

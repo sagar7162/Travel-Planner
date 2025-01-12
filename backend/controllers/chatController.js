@@ -65,13 +65,27 @@ module.exports = (server) => {
     });
 
     // Handle joining rooms
-    socket.on('joinRoom', (room) => {
-      socket.join(room);
-      console.log(`User joined room: ${room}`);
+    socket.on('joinRoom', async (room) => {
+      try {
+        socket.join(room);
+        console.log(`User joined room: ${room}`);
+
+        // Retrieve previous messages for the room (trip)
+        const trip = await Trip.findById(room).populate('messages.user', 'name');
+        if (!trip) {
+          console.error('Trip not found');
+          return;
+        }
+
+        // Emit previous messages to the user who joined
+        socket.emit('previousMessages', trip.messages);
+      } catch (error) {
+        console.error('Error handling joinRoom:', error);
+      }
     });
 
     socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);
-    });
+    })
   });
 };

@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const tripRoutes = require('./routes/tripRoutes');
+const subDestRoutes = require('./routes/subDestRoutes');
 const socketHandler = require('./controllers/chatController');
 
 dotenv.config()
@@ -31,7 +32,7 @@ connectDB().then(() => {
     console.log("MongoDB Connected successfully");
 
     // Now that DB is connected, continue with routes
-    app.use('/api', [userRoutes, tripRoutes]);
+    app.use('/api', [userRoutes, tripRoutes, subDestRoutes]);
 
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
