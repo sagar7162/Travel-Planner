@@ -6,9 +6,7 @@ router.get('/trip', getTrips);
 
 router.post('/trip/new', createNewTrip);
 
-router.put('/trip/:id/users', function(req, res){
-        addUsers
-});
+router.put('/trip/:id/users', addUsers);
 
 router.delete('/trip/:id/trip', deleteTrip);
 

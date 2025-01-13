@@ -5,7 +5,7 @@ const {createSubDest , editSubDest, deleteSubDest } = require('../controllers/su
 
 router.put('/trip/:id/newsubdest', createSubDest);
 
-router.put('/trip/:id/newsubdest', editSubDest);
+router.put('/trip/:id/editsubdest', editSubDest);
 
 router.delete('/trip/:id/delsubdest', deleteSubDest);
 
