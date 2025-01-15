@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const tripRoutes = require('./routes/tripRoutes');
 const subDestRoutes = require('./routes/subDestRoutes');
 const socketHandler = require('./controllers/chatController');
+const cors = require('cors'); // Import the cors package
 
 dotenv.config()
 console.log("Environment variables loaded:", process.env);
@@ -21,11 +22,22 @@ socketHandler(server);
 app.use(cookieParser());
 app.use(express.json());
 
+
 // Middleware
 app.use((req, res, next) => {
     console.log("backend running!");
     next();
 });
+
+app.use((req, res, next) => {
+    console.log("Received Cookies:", req.cookies);
+    next();
+});
+
+app.use(cors({
+    origin: 'http://localhost:3000', // Allow requests from your frontend
+    credentials: true, // Important for cookies, authorization headers with frontend
+}));
 
 // Connect to MongoDB
 connectDB().then(() => {

@@ -11,7 +11,7 @@ const { decode } = require("../middlewares/authMiddleware");
 const getTrips = async(req, res)=>{
 
   if(!req.cookies.authToken){
-    res.status(401).json({error : "please signin first"});
+    return res.status(401).json({error : "please signin first"});
   }
 
   const userObj = await decode(req.cookies.authToken);
