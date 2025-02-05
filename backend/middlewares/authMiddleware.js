@@ -3,7 +3,6 @@ const dotenv = require('dotenv');
 dotenv.config()
 
 const pvtkey = process.env.JWT_PRIVATE_KEY;
-//const pvtkey = "terabaap"
 
 var gentoken = (object)=>{
     return jwt.sign(object, pvtkey)

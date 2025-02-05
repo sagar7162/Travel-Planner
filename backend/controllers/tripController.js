@@ -4,19 +4,43 @@ const { decode } = require("../middlewares/authMiddleware");
 
 // iss file me logged in user k trips ki list, create new trip, trip me user add, trip delete karne k function h
 
-
-
 //get array of all created trips
 
-const getTrips = async(req, res)=>{
-
-  if(!req.cookies.authToken){
-    return res.status(401).json({error : "please signin first"});
+const getTrips = async (req, res) => {
+  if (!req.cookies.authToken) {
+    return res.status(401).json({ error: "please signin first" });
   }
 
+  // Decode token to get user id
   const userObj = await decode(req.cookies.authToken);
-  res.status(201).json({trips : userObj.trips});
-}
+  
+  // Query the database for the updated user data
+  const user = await User.findById(userObj._id);
+  
+  // Use the updated trips array from the database
+  let id_tripName = await getTripName(user.trips);
+  res.status(201).json({ trips: id_tripName });
+};
+
+
+
+
+const getTripName = async (arr) => {
+  let nameArr = [];
+  for (let trip of arr) {
+    console.log("Fetching trip ID:", trip);
+    let tripObj = await Trip.findById(trip);
+    if (!tripObj) {
+      console.error(`Trip not found for ID: ${trip}`);
+      continue; // Skip this iteration if tripObj is null
+    }
+    // Return both _id and trip name
+    nameArr.push({ _id: tripObj._id, trip: tripObj.name });
+  }
+  // console.log("sending to frontend these trips:", nameArr)
+  return nameArr;
+};
+
 
 //creating trip
 
@@ -57,7 +81,7 @@ const createNewTrip = async (req, res) => {
       message: "Trip created successfully",
       trip: newTrip,
     });
-  } catch {
+  } catch(error) {
     console.error("Error creating trip:", error);
     res.status(500).json({ message: "Error creating trip", error });
   }
@@ -70,6 +94,7 @@ const addUsers = async (req, res) => {
   let userArr = req.body.add;
 
   const tripId = req.params.id; // Access the trip ID from the URL
+  console.log("adding to trip(backend):", tripId)
   const changeTrip = await Trip.findById(tripId);
 
   if (!changeTrip) {
@@ -85,6 +110,9 @@ const addUsers = async (req, res) => {
           // Throw an error for missing user
           throw new Error(`User with email ${email} not found`);
         }
+        //console.log("adding trip to user database...", user)
+        user.trips.push(tripId);
+        await user.save();
         return user._id; // Return the user's ID if found
       })
     );
