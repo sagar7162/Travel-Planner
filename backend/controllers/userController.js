@@ -42,7 +42,7 @@ const loginUser = async (req, res) => {
 
       // Corrected cookie settings
       res.cookie("authToken", token, {
-        httpOnly: true,
+        // httpOnly: true,  // Removed to allow client-side access
         secure: true,  // Required for cross-origin cookies
         sameSite: 'none',  // Required for cross-origin cookies
         path: '/',  // Explicit path

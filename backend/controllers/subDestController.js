@@ -89,4 +89,30 @@ const deleteSubDest = async (req, res)=>{
         })
     }
 }
-module.exports = { createSubDest , editSubDest, deleteSubDest};
+
+
+const sendSubTrips = async (req, res)=>{
+  try {
+    const tripId = req.params.id;
+    const trip = await Trip.findById(tripId); // Find the trip by ID
+
+    if (!trip) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+  let resSend = [];
+    for(subdes of trip.subDestinations){
+      console.log(subdes);
+      resSend.push(subdes);
+    }
+
+    res.json({
+      message : "subdestinations",
+      subdestinations : resSend
+    })
+
+}catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+module.exports = { createSubDest , editSubDest, deleteSubDest, sendSubTrips};

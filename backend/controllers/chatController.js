@@ -1,5 +1,7 @@
 const Trip = require("../models/Trip");
 const User = require("../models/User");
+const { decode } = require("../middlewares/authMiddleware");
+
 
 const { Server } = require('socket.io');
 
@@ -29,10 +31,14 @@ module.exports = (server) => {
     // Handle chat messages
     socket.on('chatMessage', async (data) => {
       try {
-        const { tripId, userId, message } = data;
+        const { tripId, cookie, message } = data;
+        //console.log("cookie:",cookie);
+        const userObj = await decode(cookie);
+        const userId  = userObj._id;
 
         // Validate input
         if (!tripId || !userId || !message) {
+          //console.log(data);
           console.error('Invalid message data');
           return;
         }

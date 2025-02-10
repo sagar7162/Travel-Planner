@@ -4,6 +4,8 @@ import Sidebar from "../components/sidebar";
 import Navbar from "../components/navbar";
 import Main from "../components/main";
 import Chatbox from "../components/chatbox";
+import Cookies from "js-cookie";
+
 
 function Dashboard() {
   const [trips, setTrips] = useState([]);
@@ -43,6 +45,11 @@ function Dashboard() {
     }
   }, [trips, selectedTrip]);
 
+  // Retrieve the userId from local storage or your authentication context.
+  // Ensure that you set this value when the user logs in.
+  const cookie = Cookies.get("authToken"); // Adjust this as needed
+  //console.log("Cookie:{frontend}", cookie);
+
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
@@ -59,8 +66,9 @@ function Dashboard() {
           <Main selectedTrip={selectedTrip} refreshTrips={fetchTrips} />
         </div>
         <div className="w-1/5">
-          <Chatbox />
+          <Chatbox selectedTrip={selectedTrip} cookie={cookie} />
         </div>
+        
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const {createSubDest , editSubDest, deleteSubDest } = require('../controllers/subDestController');
+const {createSubDest , editSubDest, deleteSubDest, sendSubTrips } = require('../controllers/subDestController');
 
+router.get('/trip/:id/subdestinations', sendSubTrips);
 
 router.put('/trip/:id/newsubdest', createSubDest);
 

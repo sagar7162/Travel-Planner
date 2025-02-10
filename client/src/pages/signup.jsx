@@ -105,6 +105,9 @@ function Signup() {
             Submit
           </button>
         </form>
+        <div>
+          <a href="/login" className="h-2">Already Created Account?</a>
+        </div>
       </div>
     </div>
   );
