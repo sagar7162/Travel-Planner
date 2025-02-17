@@ -151,11 +151,6 @@ Contributions are welcome! If you'd like to improve the project or fix a bug, pl
 
 ---
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
 
 *Note: Customize the above details (URLs, environment variables, descriptions, etc.) as needed for your project.*
 ```
