@@ -56,7 +56,7 @@ Travel Planner is a full-stack web application designed to help users plan and m
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/travel-planner.git
+git clone https://github.com/sagar7162/Travel-Planner.git
 cd travel-planner
 ```
 
