@@ -1,6 +1,4 @@
-Below is an improved README in Markdown format for your Travel Planner project. You can include it in your repository's root as README.md:
 
-```markdown
 # Travel Planner
 
 Travel Planner is a full-stack web application designed to help users plan and manage trips collaboratively. The platform provides intuitive trip creation, sub-destination management, expense tracking, and real-time chat functionality, making trip planning engaging and efficient.
