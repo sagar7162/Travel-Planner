@@ -9,13 +9,11 @@ Travel Planner is a full-stack web application designed to help users plan and m
 
 - [Features](#features)
 - [Technologies](#technologies)
-- [Demo](#demo)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
 - [Contributing](#contributing)
-- [License](#license)
 
 ---
 
@@ -37,12 +35,6 @@ Travel Planner is a full-stack web application designed to help users plan and m
 - **Database:** MongoDB, Mongoose
 - **Real-time Communication:** Socket.IO
 - **Authentication:** JSON Web Tokens (JWT)
-
----
-
-## Demo
-
-*Include screenshots or a link to a live demo if available.*
 
 ---
 
@@ -150,9 +142,3 @@ cd travel-planner
 Contributions are welcome! If you'd like to improve the project or fix a bug, please open an issue or submit a pull request.
 
 ---
-
-
-*Note: Customize the above details (URLs, environment variables, descriptions, etc.) as needed for your project.*
-```
-
-You can save this content as `README.md` in your repository. Let me know if you need further changes!
