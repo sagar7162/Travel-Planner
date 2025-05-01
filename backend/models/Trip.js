@@ -4,18 +4,13 @@ const tripSchema = new mongoose.Schema({
   name: { type: String, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
+  expense : [{ type: mongoose.Schema.Types.ObjectId, ref: "Expense" }],
   users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   subDestinations: [
     {
       _id: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() }, // Automatically generate unique _id
       name: String,
       description: String,
-      expenditures: [
-        {
-          user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-          amount: Number,
-        },
-      ],
     },
   ],
   messages: [
@@ -28,3 +23,8 @@ const tripSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Trip", tripSchema);
+
+
+
+//have to add expenses to the trip model, and also add a new model for expenses
+// expenses should have a user, amount

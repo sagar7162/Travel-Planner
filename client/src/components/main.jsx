@@ -82,8 +82,8 @@ function Main({ selectedTrip, refreshTrips }) {
   };
 
   return (
-    <div className="relative top-[70px] h-[calc(100vh-64px)] flex border-2 border-black ml-2 mt-2 mr-2 rounded-lg">
-      <div className="grow border-l border-r p-4 flex flex-col">
+    <div className="relative top-[64px] h-[calc(100vh-85px)] flex border-2 border-black ml-2 mt-2 mr-2 rounded-lg">
+      <div className="grow border-l border-r p-4 flex flex-col overflow-y-auto">
         <button
           onClick={handleAddPeople}
           className="my-4 border rounded border-2 border-sky-400 bg-sky-400 text-white font-bold p-2"
@@ -96,6 +96,10 @@ function Main({ selectedTrip, refreshTrips }) {
           className="h-[30px] hover:bg-zinc-100 rounded hover:text-black text-transparent"
         >
           Add Sub-Destination
+        </button>
+        
+        <button className="sticky my-4 border rounded border-2 border-sky-400 bg-sky-400 text-white font-bold p-2 mt-auto mb-4">
+          Expense Break-Up
         </button>
       </div>
     </div>

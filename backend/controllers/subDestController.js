@@ -40,8 +40,8 @@ const createSubDest = async (req, res) => {
 const editSubDest = async (req, res) => {
 try{
   const { subDestId, name, description } = req.body;
-  const trip = await Trip.findById(tripId); // Find the trip by ID
-  const subDestination = await trip.subDestinations.id(subDestId);
+  const trip = await Trip.findById(req.params.id); // Find the trip by ID
+  const subDestination = trip.subDestinations.id(subDestId);
 
   if (name) subDestination.name = name;
   if (description) subDestination.description = description;
@@ -65,8 +65,8 @@ try{
 const deleteSubDest = async (req, res)=>{
     try{
         const { subDestId, name, description } = req.body;
-        const trip = await Trip.findById(tripId); // Find the trip by ID
-        const subDestination = await trip.subDestinations.id(subDestId);
+        const trip = await Trip.findById(req.params.id); // Find the trip by ID
+        const subDestination = trip.subDestinations.id(subDestId);
 
         if (!subDestination) {
             return res.status(404).json({ message: "Sub-destination not found" });

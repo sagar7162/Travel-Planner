@@ -71,11 +71,11 @@ const createNewTrip = async (req, res) => {
 
     //add newly created trip id into trips array of user
 
-    await User.findByIdAndUpdate(
-      currUser._id,
-      { $push: { trips: newTrip._id } }, // Add the new trip's _id to the user's trips array
-      { new: true } // Return the updated user document
-    );
+      User.findByIdAndUpdate(
+        currUser._id,
+        { $push: { trips: newTrip._id } }, // Add the new trip's _id to the user's trips array
+        { new: true } // Return the updated user document
+      );
 
     res.status(201).json({
       message: "Trip created successfully",
