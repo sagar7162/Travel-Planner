@@ -1,39 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
+import axios from "../utils/axios";
 
-// Set default axios configuration
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:7162/api";
-
-function Sidebar({ selectedTrip, onSelectTrip }) {
-  const [trips, setTrips] = useState([]);
-  const [error, setError] = useState(null);
-
-  // Fetch trips from backend
-  const fetchTrips = async () => {
-    try {
-      const response = await axios.get("/trip");
-      console.log("Trips response:", response.data);
-      if (response.data && Array.isArray(response.data.trips)) {
-        setTrips(response.data.trips);
-      } else {
-        console.warn("Unexpected response format:", response.data);
-        setTrips([]);
-      }
-    } catch (error) {
-      console.error("Error fetching trips:", error);
-      setError(
-        error.response?.data?.error || error.message || "Error fetching trips"
-      );
-      setTrips([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchTrips();
-  }, []);
-
-  // Handler for creating a new trip remains the same
+function Sidebar({ trips, error, selectedTrip, onSelectTrip, refreshTrips }) {
+  // Handler for creating a new trip
   const handleNewTrip = async () => {
     const name = prompt("Enter the trip name:");
     if (!name) return;
@@ -49,8 +18,8 @@ function Sidebar({ selectedTrip, onSelectTrip }) {
       });
       console.log("New trip created:", response.data);
       alert("Trip created successfully!");
-      // After successful creation, re-fetch the trips
-      fetchTrips();
+      // After successful creation, refresh trips
+      if (refreshTrips) refreshTrips();
     } catch (error) {
       console.error("Error creating trip:", error);
       alert(

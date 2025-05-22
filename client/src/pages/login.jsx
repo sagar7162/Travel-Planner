@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../utils/axios"; // Using configured axios
 import { useNavigate } from "react-router-dom";
-
-const API_URL = "http://localhost:7162/api";
+import Cookies from "js-cookie";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -21,22 +20,27 @@ function Login() {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/login`, {
+      // Use our configured axios instance with withCredentials: true
+      const response = await axios.post("/login", {
         email,
         password,
       });
 
       if (response.data.message === "login successful" && response.data.token) {
-        // Store the token securely (using localStorage for this example but consider HttpOnly cookies in production)
+        // Store the token in both localStorage and as a cookie
         localStorage.setItem("token", response.data.token);
-        //alert("Login successful!");
-        console.log("login successful");
+        
+        // Set the cookie using js-cookie
+        Cookies.set("authToken", response.data.token, { 
+          expires: 1, // 1 day
+          path: '/'
+        });
+        
+        console.log("Login successful, token saved");
         navigate("/dashboard");
       } else {
         console.error("Unexpected login response:", response.data);
-        alert(
-          "Login successful, but an unexpected response was received from the server."
-        );
+        alert("Login successful, but an unexpected response was received from the server.");
       }
     } catch (error) {
       console.error("Login error:", error);

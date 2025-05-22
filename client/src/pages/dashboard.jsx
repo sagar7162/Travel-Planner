@@ -59,7 +59,8 @@ function Dashboard() {
             trips={trips} 
             error={error} 
             selectedTrip={selectedTrip} 
-            onSelectTrip={setSelectedTrip} 
+            onSelectTrip={setSelectedTrip}
+            refreshTrips={fetchTrips}
           />
         </div>
         <div className="grow">

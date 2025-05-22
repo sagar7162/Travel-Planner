@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "../utils/axios";
 import SubDestinations from "../components/SubDestinations";
+import ExpenseTable from "../components/ExpenseTable";
+import AddExpenseForm from "../components/AddExpenseForm";
 
 function Main({ selectedTrip, refreshTrips }) {
+  const [showExpenseTable, setShowExpenseTable] = useState(false);
+  const [showAddExpenseForm, setShowAddExpenseForm] = useState(false);
+
   // Handler for adding users to the currently selected trip
   const handleAddPeople = async () => {
     if (!selectedTrip) {
@@ -58,11 +63,6 @@ function Main({ selectedTrip, refreshTrips }) {
     }
 
     const description = prompt("Enter sub-destination description:");
-    if (!description) {
-      alert("Sub-destination description is required.");
-      return;
-    }
-
     try {
       console.log("Adding sub-destination in this trip (frontend):", selectedTrip);
       const response = await axios.put(`/trip/${selectedTrip._id}/newsubdest`, {
@@ -98,13 +98,48 @@ function Main({ selectedTrip, refreshTrips }) {
           Add Sub-Destination
         </button>
         
-        <button className="sticky my-4 border rounded border-2 border-sky-400 bg-sky-400 text-white font-bold p-2 mt-auto mb-4">
-          Expense Break-Up
-        </button>
+        <div className="sticky mt-auto">
+          <button
+            onClick={() => selectedTrip ? setShowAddExpenseForm(true) : alert("Please select a trip first")}
+            className="w-full mb-4 border rounded border-2 border-green-500 bg-green-500 text-white font-bold p-2"
+          >
+            Add Expense
+          </button>
+          
+          <button
+            onClick={() => selectedTrip ? setShowExpenseTable(true) : alert("Please select a trip first")}
+            className="w-full mb-4 border rounded border-2 border-sky-400 bg-sky-400 text-white font-bold p-2"
+          >
+            Expense Break-Up
+          </button>
+        </div>
       </div>
+      
+      {showExpenseTable && selectedTrip && (
+        <ExpenseTable 
+          tripId={selectedTrip._id} 
+          onClose={() => setShowExpenseTable(false)} 
+        />
+      )}
+      
+      {showAddExpenseForm && selectedTrip && (
+        <AddExpenseForm 
+          tripId={selectedTrip._id}
+          onClose={() => setShowAddExpenseForm(false)}
+          onExpenseAdded={() => {
+            // Refresh data
+            refreshTrips();
+            // If expense table is open, refresh it too
+            if (showExpenseTable) {
+              // We need to toggle it to refresh
+              setShowExpenseTable(false);
+              setTimeout(() => setShowExpenseTable(true), 100);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
 
 export default Main;
-// The Main component now has a new button to add a sub-destination to the currently selected trip. The button calls a new handler function, handleNewSubDestination, which prompts the user for a name and description for the new sub-destination. The handler then sends a PUT request to the backend API to create the sub-destination.
