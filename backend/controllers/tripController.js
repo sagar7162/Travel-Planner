@@ -11,41 +11,57 @@ const getTrips = async (req, res) => {
     return res.status(401).json({ error: "please signin first" });
   }
 
-  // Decode token to get user id
-  const userObj = await decode(req.cookies.authToken);
-  
-  // Query the database for the updated user data
-  const user = await User.findById(userObj._id);
-  
-  // Use the updated trips array from the database
-  let id_tripName = await getTripName(user.trips);
-  res.status(201).json({ trips: id_tripName });
+  try {
+    // Decode token to get user id
+    const userObj = decode(req.cookies.authToken);
+
+    // Query the database for the updated user data
+    //console.log("userObj in getTrips:", userObj);
+    const user = await User.findById(userObj._id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Use the updated trips array from the database
+    let id_tripName = await getTripName(user.trips);
+    res.status(200).json({ trips: id_tripName });
+  } catch (error) {
+    console.error("Error decoding token or fetching trips:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
-
-
-
 
 const getTripName = async (arr) => {
   let nameArr = [];
+  
+  if (!arr || arr.length === 0) {
+    console.log("No trips found for user");
+    return nameArr; // Return empty array if no trips
+  }
+  
   for (let trip of arr) {
     console.log("Fetching trip ID:", trip);
-    let tripObj = await Trip.findById(trip);
-    if (!tripObj) {
-      console.error(`Trip not found for ID: ${trip}`);
-      continue; // Skip this iteration if tripObj is null
+    try {
+      let tripObj = await Trip.findById(trip);
+      if (!tripObj) {
+        console.error(`Trip not found for ID: ${trip}`);
+        continue; // Skip this iteration if tripObj is null
+      }
+      // Return both _id and trip name
+      nameArr.push({ _id: tripObj._id, trip: tripObj.name });
+    } catch (error) {
+      console.error(`Error fetching trip with ID ${trip}:`, error);
+      // Continue to next trip even if there's an error
     }
-    // Return both _id and trip name
-    nameArr.push({ _id: tripObj._id, trip: tripObj.name });
   }
-  // console.log("sending to frontend these trips:", nameArr)
+  console.log("Sending to frontend these trips:", nameArr);
   return nameArr;
 };
-
 
 //creating trip
 
 const createNewTrip = async (req, res) => {
-
   /*{
     "name" : "",
     "startDate" : ,
@@ -53,15 +69,16 @@ const createNewTrip = async (req, res) => {
   }*/
   let { name, startDate, endDate } = req.body;
 
-  const currUser = await decode(req.cookies.authToken);
+  const currUser = decode(req.cookies.authToken);
   if (!currUser) {
-    res.json({
+    return res.status(401).json({
       error: "user not authenticated!",
     });
   }
 
   //create new trip
   try {
+    // Create the new trip
     const newTrip = await Trip.create({
       name,
       startDate,
@@ -69,18 +86,28 @@ const createNewTrip = async (req, res) => {
       users: [currUser._id],
     });
 
-    //add newly created trip id into trips array of user
+    console.log("Trip created with ID:", newTrip._id);
 
-      User.findByIdAndUpdate(
-        currUser._id,
-        { $push: { trips: newTrip._id } }, // Add the new trip's _id to the user's trips array
-        { new: true } // Return the updated user document
-      );
+    // Find the user and add the trip to their trips array
+    const user = await User.findById(currUser._id);
+    if (!user) {
+      console.error("User not found when adding trip");
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Add the trip to the user's trips array
+    user.trips.push(newTrip._id);
+    
+    // Save the updated user
+    await user.save();
+    
+    console.log("Updated user trips array:", user.trips);
 
     res.status(201).json({
       message: "Trip created successfully",
       trip: newTrip,
     });
+  
   } catch(error) {
     console.error("Error creating trip:", error);
     res.status(500).json({ message: "Error creating trip", error });
@@ -176,7 +203,31 @@ const deleteTrip = async (req, res) => {
   }
 };
 
+// Get users for a specific trip
+const getTripUsers = async (req, res) => {
+  try {
+    if (!req.cookies.authToken) {
+      return res.status(401).json({ error: "Please sign in first" });
+    }
+    
+    const tripId = req.params.id;
+    const trip = await Trip.findById(tripId).populate('users', 'name email');
+    
+    if (!trip) {
+      return res.status(404).json({ success: false, message: "Trip not found" });
+    }
+    
+    res.status(200).json({ 
+      success: true, 
+      users: trip.users
+    });
+  } catch (error) {
+    console.error("Error fetching trip users:", error);
+    res.status(500).json({ 
+      success: false, 
+      error: "Error fetching trip users" 
+    });
+  }
+};
 
-
-
-module.exports = { createNewTrip, addUsers, deleteTrip, getTrips };
+module.exports = { createNewTrip, addUsers, deleteTrip, getTrips, getTripUsers };

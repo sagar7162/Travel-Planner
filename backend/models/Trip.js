@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const tripSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  startDate: { type: Date, required: true },
-  endDate: { type: Date, required: true },
+  startDate: { type: Date, required: false },
+  endDate: { type: Date, required: false },
   expense : [{ type: mongoose.Schema.Types.ObjectId, ref: "Expense" }],
   users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   subDestinations: [
     {
       _id: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() }, // Automatically generate unique _id
-      name: String,
-      description: String,
+      name: {type :String, required: true},
+      description: {type :String, required: false},
     },
   ],
   messages: [
